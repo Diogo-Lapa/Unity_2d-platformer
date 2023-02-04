@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngineInternal;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
     public float moveSpeed;
     public Rigidbody2D rig;
     public float jumpForce;
+    public SpriteRenderer sr;
 
     void FixedUpdate()
     {
@@ -24,11 +26,25 @@ public class Player : MonoBehaviour
         {
             rig.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
+
+        if (rig.velocity.x > 0)
+        {
+            sr.flipX = false;
+        }
+        else if (rig.velocity.x < 0)
+        {
+            sr.flipX = true;
+        }
     }
 
     bool IsGrounded()
     {
         RaycastHit2D hit = Physics2D.Raycast(transform.position + new Vector3(0, -0.1f, 0), Vector2.down, 0.2f);
         return hit.collider != null;
+    }
+
+    public void GameOver ()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
